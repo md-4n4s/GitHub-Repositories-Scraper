@@ -3,6 +3,7 @@ import time
 from dotenv import load_dotenv
 import os
 import random
+import csv
 
 load_dotenv()
 
@@ -12,7 +13,7 @@ password = os.getenv("GITHUB_PASSWORD")
 
 def create_browser():
     return p.chromium.launch(
-        headless=False
+        headless=True
     )
 
 def create_page(browser):
@@ -20,7 +21,7 @@ def create_page(browser):
 
 def login(page):
 
-    print("Loging in...")
+    print("Logging in...")
     time.sleep(random.randint(1,3))
 
     try:
@@ -72,3 +73,13 @@ with sync_playwright() as p:
 
 
         page.locator("a[aria-label=\"Next Page\"]").click()
+
+    browser.close()
+
+with open("repositories.csv", "w", newline="") as csvfile:
+    writer = csv.writer(csvfile)
+
+    writer.writerow(["Name", "URL", "Stars"])
+
+    for repo in repositories:
+        writer.writerow([repo["name"], repo["url"], repo["stars"]])
