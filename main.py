@@ -20,6 +20,7 @@ def create_page(browser):
 
 def login(page):
 
+    print("Loging in...")
     time.sleep(random.randint(1,3))
 
     try:
@@ -29,14 +30,11 @@ def login(page):
 
         page.locator("input[name=\"commit\"]").click()
 
-        time.sleep(random.randint(1, 3))
-
-        print(page.title())
-
-        time.sleep(10)
-
     except:
         print("Login failed")
+
+    else:
+        print("Login successful")
 
 with sync_playwright() as p:
 
@@ -46,3 +44,13 @@ with sync_playwright() as p:
     page.goto("https://github.com/login")
 
     login(page)
+
+    search = input("Enter search term: ")
+
+    page.locator("button[aria-label=\"Search or jump to…\"]").click()
+
+    page.locator("#query-builder-test").wait_for()
+    page.fill("#query-builder-test", search)
+    page.locator("#query-builder-test").press("Enter")
+
+    time.sleep(10)
