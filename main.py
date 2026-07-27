@@ -53,4 +53,22 @@ with sync_playwright() as p:
     page.fill("#query-builder-test", search)
     page.locator("#query-builder-test").press("Enter")
 
-    time.sleep(10)
+    repositories = []
+
+    for _ in range(2):
+
+        time.sleep(random.randint(1,3))
+        results = page.locator("div.Repositories-module__resultContent__X93zw")
+
+        for i in range(results.count()):
+
+            repository = results.nth(i)
+
+            repo= {"name": repository.locator("div.Header-module__title__EpJLU").inner_text().strip(),
+                "url": "https://github.com" + repository.locator("h3 a").get_attribute("href"),
+                "stars": repository.locator("ul.Footer-module__footer__rWx13 a").inner_text().strip()}
+            print(repo)
+            repositories.append(repo)
+
+
+        page.locator("a[aria-label=\"Next Page\"]").click()
